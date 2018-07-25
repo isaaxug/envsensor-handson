@@ -13,7 +13,7 @@ isaaxを使ってデバイスに配信するプログラムはGitリポジトリ
 
 > リポジトリとは、ファイルやディレクトリの変更履歴を保持したプログラムファイルの集合です。Gitを使って開発する場合、大抵は1つのアプリケーションごとに1リポジトリ作成します(もちろん例外もあります)。
 
-[サンプルコード - GitHub](https://github.com/isaaxug/envsensor-ambient)
+- [サンプルコード - GitHub](https://github.com/isaaxug/envsensor-ambient)
 
 ![fork repository](images/fork-repository.png)
 
@@ -65,11 +65,25 @@ isaaxdのインストールが完了した時点でサンプルコードも同�
 
 ![device-log](images/device-log.png)
 
-この時点では、デバイスログは`No sensors found.`と表示されています。サンプルコードでは環境変数から読み取ったMACアドレスを元にBLEデバイスの判別とセンサー値を取得します。次節でisaaxを使ってユーザーアプリケーションがアクセスできる環境変数を定義する方法について説明します。
+この時点では、デバイスログは`No sensors found.`と表示されています。サンプルコードでは環境変数から読み取ったMACアドレスを元にBLEデバイスの判別とセンサー値の取得をおこないます。次節でisaaxを使ってユーザーアプリケーションがアクセスできる環境変数を定義する方法について説明します。
 
 ## 環境変数サービス (ユーザー変数)
 
+isaaxではAPIキーのような認証情報や環境によって異なるエンドポイントなど、ハードコーディングしたくないデータを切り分けてデプロイする機能があります。isaaxで登録したこのデータはデバイス上で環境変数としてアクセスできます。
 
+クラスターページから「Cluster Settings」をクリックしてドロップダウンを開きます。
+
+![cluster settings](images/cluster-settings.png)
+
+「ユーザー変数」タブから「＋環境変数追加」をクリックします。
+
+![list of user var](images/list-of-user-var.png)
+
+サンプルアプリケーションでは環境変数`BLUETHOOTH_DEVICE_ADDRESS`からMACアドレスを取得します。値はそれぞれの環境センサのMACアドレスに置き換えてください（勉強会では配った環境センサの箱に付箋でMACアドレスが記入してあるのでそちらを参照してください）。
+
+![user var creation](images/user-var-creation.png)
+
+デバイスページに移動し、デバイスログが`No sensors found.`から何らかの数値に置き換わっていれば成功です。ここでは照度を表示しています。
 
 ## 課題1 任意のセンサーデータを出力しよう
 
