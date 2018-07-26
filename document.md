@@ -49,7 +49,9 @@ isaaxを使ってデバイスに配信するプログラムはGitリポジトリ
 
 ## isaaxを使ったログデータの確認
 
-isaaxdのインストールが完了した時点でサンプルコードも同時にインストールされています。サンプルコードは、オムロン環境センサのアドバタイズパケットからセンサーデータを取得し、その中から温度を標準出力するシンプルなスクリプトです。isaaxdはこのアプリケーションの標準出力と、標準エラー出力を監視してクラウドにログデータとして送信します。
+isaaxdのインストールが完了した時点でサンプルコードも同時にインストールされています。サンプルコードは、オムロン環境センサのアドバタイズパケットからセンサーデータを取得し、その中から照度を標準出力するシンプルなスクリプトです。isaaxdはこのアプリケーションの標準出力と、標準エラー出力を監視してクラウドにログデータとして送信します。
+
+[サンプルコード(envsensor-ambient/sample1.py) - GitHub](https://github.com/isaaxug/envsensor-ambient/blob/master/sample1.py)
 
 ダッシュボードに戻り、登録したデバイスの状態を確認しましょう。プロジェクトトークンのモーダルを閉じ、クラスターをクリックします。
 
@@ -79,15 +81,31 @@ isaaxではAPIキーのような認証情報や環境によって異なるエン
 
 ![list of user var](images/list-of-user-var.png)
 
-サンプルアプリケーションでは環境変数`BLUETHOOTH_DEVICE_ADDRESS`からMACアドレスを取得します。値はそれぞれ手元の環境センサのMACアドレスに置き換えてください（勉強会では配った環境センサの箱に付箋でMACアドレスが記入してあるのでそちらを参照してください）。
+サンプルアプリケーションでは環境変数`BLUETOOTH_DEVICE_ADDRESS`からMACアドレスを取得します。値はそれぞれ手元の環境センサのMACアドレスに置き換えてください（勉強会では配った環境センサの箱に付箋でMACアドレスが記入してあるのでそちらを参照してください）。
 
 ![user var creation](images/user-var-creation.png)
 
-保存後、「restart」ボタンをクリックし、デバイスログが`No sensors found.`から`Illumination: 254 lx`のような数値に置き換わっていれば成功です。ここでは照度を表示しています。カメラのライトなどでセンサーを照らしてみましょう。
+保存後、「restart」ボタンをクリックし、デバイスログが`No sensors found.`から`Illumination: 254 lx`のような数値に置き換わっていれば成功です。ここでは照度を表示しています。スマホのライトなどでセンサーを照らしてみましょう。
 
 ![restart app](images/restart-app.png)
 
-## 課題1 任意のセンサーデータを出力しよう
+[デバイス上で動作するサンプル側](https://github.com/isaaxug/envsensor-ambient/blob/master/sample1.py#L12)では、11行目でMACアドレスを取得しています。
+
+---
+
+isaaxdのインストール以降、プロジェクトに紐づけたリポジトリに更新があるたびにデバイスを自動的にアップデートしてくれます。ここで、いくつかの課題にチャレンジしてisaaxを使ってデバイスを遠隔から更新する方法について学びましょう。フォークしたリポジトリの編集はPC上で行っても、GitHub上から直接おこなっても構いません。
+
+## 課題1 どんなセンサーデータがあるか確認しよう
+
+`sample1.py`の[22行目のコード](https://github.com/isaaxug/envsensor-ambient/blob/master/sample1.py#L22)が実際に環境センサから取得しているデータです。Pythonの組み込み関数`vars()`を使って、センサーデータにどのような種類があるのか確認しましょう。
+
+[Python組み込み関数 vars() - 公式ドキュメント](https://docs.python.jp/3/library/functions.html#vars)
+
+## 課題2 任意のセンサーデータを出力しよう
+
+課題1で確認したセンサーデータの中から、好きなものを選んで表示させるように変更を加えましょう。
+
+---
 
 ## Ambientアカウント登録
 
@@ -107,16 +125,50 @@ Ambientアカウントに登録後、「Myチャネル」->「チャネルを作
 
 ![channel creation](images/channel-creation.png)
 
-作成したチャンネル情報の中から、データを保存するために「チャネルID」と「ライトキー」を後ほど使います。
+作成したチャネル情報の中から、データを保存するために「チャネルID」と「ライトキー」を後ほど使います。
 
 ![channel details](images/channel-details.png)
 
 ## 環境変数の追加（チャンネルID, ライトキー）
+
+更新するサンプルアプリケーションがAmbientにデータを送信するために、チャネルIDとライトキーが必要となります。これらの情報を先ほどの容量で環境変数`AMBIENT_CHANNEL_ID`、`AMBIENT_WRITE_KEY`として設定します。
+
+![extra vars](images/extra-vars.png)
+
+
 ## isaax.jsonのエントリーポイント変更
 
-## 課題2 複数のチャネルに情報を送ろう
+最後に、isaaxを使ってラズベリーパイ側のアプリケーションをAmbientにデータを送信するように変更します。サンプルコードはすでに用意してあるのでisaax.jsonを修正して実行するファイルを`sample1.py`から`sample2.py`に変更します。
 
-## 課題3 複数の環境センサに対応しよう
+フォークしたリポジトリの`isaax.json`9行目を下記のように変更してコミットします。
+
+```json
+{
+  "name": "Envsensor Ambient",
+  "version": "",
+  "description": "",
+  "author": "",
+  "license": "",
+  "language":"python",
+  "scripts": {
+	"start": "python3 -u sample2.py"
+  }
+}
+```
+
+Ambientのダッシュボードから該当するチャネルをクリックすると、数十秒後にチャートが自動的に作成されます。
+
+![ambient dashboard](images/ambient-dashboard.png)
+
+---
+
+## 課題3 チャネルに複数のセンサーデータを送ろう
+
+AmbientのPythonモジュールドキュメントを参考に`sample2.py`に変更を加え、チャネルに複数のセンサーデータを送信するようにアプリケーションを更新しましょう。
+
+[Ambient Pythonモジュール - 公式ドキュメント](https://ambidata.io/refs/python/)
+
+---
 
 ## 付録1. SDカードのセットアップ
 
