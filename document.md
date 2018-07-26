@@ -79,11 +79,13 @@ isaaxではAPIキーのような認証情報や環境によって異なるエン
 
 ![list of user var](images/list-of-user-var.png)
 
-サンプルアプリケーションでは環境変数`BLUETHOOTH_DEVICE_ADDRESS`からMACアドレスを取得します。値はそれぞれの環境センサのMACアドレスに置き換えてください（勉強会では配った環境センサの箱に付箋でMACアドレスが記入してあるのでそちらを参照してください）。
+サンプルアプリケーションでは環境変数`BLUETHOOTH_DEVICE_ADDRESS`からMACアドレスを取得します。値はそれぞれ手元の環境センサのMACアドレスに置き換えてください（勉強会では配った環境センサの箱に付箋でMACアドレスが記入してあるのでそちらを参照してください）。
 
 ![user var creation](images/user-var-creation.png)
 
-デバイスページに移動し、デバイスログが`No sensors found.`から何らかの数値に置き換わっていれば成功です。ここでは照度を表示しています。
+保存後、「restart」ボタンをクリックし、デバイスログが`No sensors found.`から`Illumination: 254 lx`のような数値に置き換わっていれば成功です。ここでは照度を表示しています。カメラのライトなどでセンサーを照らしてみましょう。
+
+![restart app](images/restart-app.png)
 
 ## 課題1 任意のセンサーデータを出力しよう
 
